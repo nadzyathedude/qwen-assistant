@@ -65,8 +65,8 @@ def _build_chatml(prompt: str, history: list[dict[str, str]]) -> str:
     return "\n".join(parts)
 
 
-@app.post("/generate")
-async def generate(req: GenerateRequest, request: Request) -> StreamingResponse | JSONResponse:
+@app.post("/generate", response_model=None)
+async def generate(req: GenerateRequest, request: Request):
     chatml_prompt = _build_chatml(req.prompt, req.history)
 
     if not req.stream:
