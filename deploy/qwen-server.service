@@ -1,0 +1,36 @@
+[Unit]
+Description=Qwen Inference Server (FastAPI + llama.cpp)
+After=network.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=qwen
+Group=qwen
+WorkingDirectory=/opt/qwen-assistant
+EnvironmentFile=/opt/qwen-assistant/.env
+ExecStart=/opt/qwen-assistant/venv/bin/python -m server.app
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=3
+StartLimitIntervalSec=60
+
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/opt/qwen-assistant/logs /tmp
+PrivateTmp=true
+
+# Resource limits
+LimitNOFILE=65536
+MemoryMax=8G
+TimeoutStopSec=30
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=qwen-server
+
+[Install]
+WantedBy=multi-user.target
